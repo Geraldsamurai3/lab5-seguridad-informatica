@@ -1,4 +1,8 @@
 {
+  "name": "lab5-seguridad-informatica",
+  "version": "1.0.0",
+  "description": "Proyecto de seguridad informática con chat en tiempo real",
+  "main": "server.js",
   "dependencies": {
     "express": "^4.21.2",
     "mocha": "^11.0.1",
@@ -6,11 +10,25 @@
   },
   "scripts": {
     "start": "node server.js",
-    "test": "mocha"
+    "test": "mocha",
+    "test:verbose": "mocha --reporter spec",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "security:check": "npm audit",
+    "security:fix": "npm audit fix"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",
     "eslint": "^9.39.0",
     "globals": "^16.5.0"
-  }
+  },
+  "keywords": [
+    "security",
+    "websockets",
+    "chat",
+    "express",
+    "socket.io"
+  ],
+  "author": "",
+  "license": "ISC"
 }
