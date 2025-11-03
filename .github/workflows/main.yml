@@ -11,7 +11,7 @@ jobs:
   linting:
     name: Code Linting
     runs-on: ubuntu-22.04
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -43,7 +43,7 @@ jobs:
     name: Unit Tests (BDD)
     runs-on: ubuntu-22.04
     needs: linting  # Solo ejecuta si el linting pasa
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -73,7 +73,7 @@ jobs:
     name: Snyk Security Scan
     runs-on: ubuntu-22.04
     needs: unit-tests  # Solo ejecuta si los tests pasan
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -93,6 +93,8 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
+          # Ejecuta la comprobación (test) y aplica filtro de severidad
+          command: test
           args: --severity-threshold=high --all-projects
 
       - name: Upload Snyk results to GitHub Code Scanning
@@ -134,7 +136,7 @@ jobs:
     runs-on: ubuntu-22.04
     needs: [linting, unit-tests, snyk-security, codeql-analysis]
     if: always()
-    
+
     steps:
       - name: Generate Summary
         run: |
