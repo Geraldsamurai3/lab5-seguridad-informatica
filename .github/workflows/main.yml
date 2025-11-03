@@ -11,29 +11,25 @@ jobs:
     runs-on: ubuntu-22.04 
 
     steps:
-      
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      
       - name: Install dependencies
         run: npm install
 
-      
       - name: Run ESLint
-        run: npx eslint .
+        run: |
+          chmod +x ./node_modules/.bin/eslint
+          npx eslint .
 
-      
       - name: Run Unit Tests
         run: npm test
 
-   
       - name: Run Snyk Security Scan
         uses: snyk/actions/node@master
         env:
