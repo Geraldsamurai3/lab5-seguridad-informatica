@@ -28,7 +28,9 @@ jobs:
           npx eslint .
 
       - name: Run Unit Tests
-        run: npm test
+        run: |
+          chmod +x ./node_modules/.bin/mocha
+          npm test
 
       - name: Run Snyk Security Scan
         uses: snyk/actions/node@master
