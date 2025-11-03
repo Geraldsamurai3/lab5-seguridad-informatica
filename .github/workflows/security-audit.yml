@@ -1,0 +1,47 @@
+name: Security Audit
+
+on:
+  schedule:
+    # Ejecutar todos los lunes a las 9:00 AM
+    - cron: '0 9 * * 1'
+  workflow_dispatch:  # Permite ejecución manual
+
+jobs:
+  security-audit:
+    name: NPM Security Audit
+    runs-on: ubuntu-22.04
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run npm audit
+        run: npm audit --audit-level=moderate
+        continue-on-error: true
+
+      - name: Generate Security Report
+        if: always()
+        run: |
+          echo "# 🔒 Security Audit Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Dependencies Security Status" >> $GITHUB_STEP_SUMMARY
+          npm audit --json > audit.json || true
+          echo "\`\`\`json" >> $GITHUB_STEP_SUMMARY
+          cat audit.json >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload Audit Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-audit-results
+          path: audit.json
+          retention-days: 30
