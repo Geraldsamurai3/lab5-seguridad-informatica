@@ -8,16 +8,15 @@ module.exports = {
       // inicializacion lazy
       var isValid = false;
       // expresion regular copiada de StackOverflow
-      var re = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/i;
+      var re = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s./0-9]*$/i;
   
       // validacion Regex
       try {
         isValid = re.test(phone);
       } catch (e) {
         console.log(e);
-      } finally {
-          return isValid;
       }
+      return isValid;
       // fin del try-catch block
     },
   
@@ -26,7 +25,7 @@ module.exports = {
       // inicializacion lazy
       var isValid = false;
       // expresion regular mejorada para URLs de imágenes más segura
-      var re = /^https?:\/\/[^\s<>"{}|\\^`\[\]]+\.(?:jpg|jpeg|gif|png|bmp|webp)(?:\?[^\s<>"{}|\\^`\[\]]*)?$/i;
+      var re = /^https?:\/\/[^\s<>"{}|\\^`[\]]+\.(?:jpg|jpeg|gif|png|bmp|webp)(?:\?[^\s<>"{}|\\^`[\]]*)?$/i;
   
       // validacion Regex
       try {
@@ -37,9 +36,8 @@ module.exports = {
         isValid = re.test(url);
       } catch (e) {
         console.log(e);
-      } finally {
-          return isValid;
       }
+      return isValid;
       // fin del try-catch block
     },
   
@@ -59,9 +57,8 @@ module.exports = {
         isValid = re.test(url);
       } catch (e) {
         console.log(e);
-      } finally {
-          return isValid;
       }
+      return isValid;
       // fin del try-catch block
     },
 
@@ -81,14 +78,13 @@ module.exports = {
         isValid = re.test(url);
       } catch (e) {
         console.log(e);
-      } finally {
-        return isValid;
       }
+      return isValid;
     },
 
     is_valid_direct_video: function (url) {
       var isValid = false;
-      var re = /^https?:\/\/[^\s<>"{}|\\^`\[\]]+\.(?:mp4|webm|ogg|avi|mov)(?:\?[^\s<>"{}|\\^`\[\]]*)?$/i;
+      var re = /^https?:\/\/[^\s<>"{}|\\^`[\]]+\.(?:mp4|webm|ogg|avi|mov)(?:\?[^\s<>"{}|\\^`[\]]*)?$/i;
       
       try {
         if (this.containsScriptInjection(url)) {
@@ -97,9 +93,8 @@ module.exports = {
         isValid = re.test(url);
       } catch (e) {
         console.log(e);
-      } finally {
-        return isValid;
       }
+      return isValid;
     },
   
     getYTVideoId: function(url){
@@ -109,16 +104,16 @@ module.exports = {
   
     getEmbeddedCode: function (url){
       if (this.is_valid_yt_video(url)) {
-        var id = this.getYTVideoId(url);
-        var code = '<iframe width="560" height="315" src="https://www.youtube.com/embed/'+id+ '" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
-        return code;
+        var ytId = this.getYTVideoId(url);
+        var ytCode = '<iframe width="560" height="315" src="https://www.youtube.com/embed/'+ytId+ '" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+        return ytCode;
       } else if (this.is_valid_vimeo_video(url)) {
-        var id = this.getVimeoVideoId(url);
-        var code = '<iframe src="https://player.vimeo.com/video/'+id+'" width="560" height="315" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>';
-        return code;
+        var vimeoId = this.getVimeoVideoId(url);
+        var vimeoCode = '<iframe src="https://player.vimeo.com/video/'+vimeoId+'" width="560" height="315" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>';
+        return vimeoCode;
       } else if (this.is_valid_direct_video(url)) {
-        var code = '<video width="560" height="315" controls><source src="'+url+'" type="video/mp4">Tu navegador no soporta el elemento de video.</video>';
-        return code;
+        var videoCode = '<video width="560" height="315" controls><source src="'+url+'" type="video/mp4">Tu navegador no soporta el elemento de video.</video>';
+        return videoCode;
       }
       return url; // Fallback
     },
@@ -193,15 +188,15 @@ module.exports = {
         }
   
         if(this.is_valid_url_image(obj.mensaje)){
-          console.log("Es una imagen!")
+          console.log("Es una imagen!");
           obj.mensaje = this.getImageTag(obj.mensaje);
         }
         else if(this.is_valid_video_url(obj.mensaje)){
-          console.log("Es un video!")
+          console.log("Es un video!");
           obj.mensaje = this.getEmbeddedCode(obj.mensaje);
         }
         else{
-          console.log("Es un texto!")
+          console.log("Es un texto!");
           // Sanitizar el texto para prevenir XSS
           obj.mensaje = this.sanitizeText(obj.mensaje);
         }
