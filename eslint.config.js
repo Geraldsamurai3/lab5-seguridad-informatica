@@ -1,23 +1,27 @@
+// eslint.config.js
 import js from "@eslint/js";
 import globals from "globals";
 import { defineConfig } from "eslint/config";
 
-export default [
+export default defineConfig([
+  js.configs.recommended, 
   {
     files: ["**/*.js"],
     languageOptions: {
       globals: {
-        // Esto le indica a ESLint que Mocha está disponible
+        ...globals.node, 
         describe: "readonly",
         it: "readonly",
         before: "readonly",
         after: "readonly",
         beforeEach: "readonly",
-        afterEach: "readonly"
-             
+        afterEach: "readonly",
       },
     },
+    rules: {
+      "no-unused-vars": "warn",
+      "no-undef": "error",
+      "semi": ["error", "always"],
+    },
   },
-];
-
-//cambios
+]);
