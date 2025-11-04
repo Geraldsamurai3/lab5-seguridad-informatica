@@ -1,26 +1,22 @@
-
-FROM node:20-alpine
+FROM node:22-alpine
 
 
 WORKDIR /app
 
-
 COPY package*.json ./
+
+RUN apk update && apk upgrade --no-cache
+
+RUN npm ci --omit=dev
+
 COPY . .
-
-
-RUN npm install --omit=dev
-
 
 ENV NODE_ENV=development
 ENV PORT=3001
 
-
-EXPOSE 3001
-
-
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 USER appuser
 
-# Comando para ejecutar la app
+EXPOSE 3001
+
 CMD ["node", "server.js"]
