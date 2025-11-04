@@ -4,6 +4,8 @@
   "description": "Proyecto de seguridad informática con chat en tiempo real",
   "main": "server.js",
   "dependencies": {
+    "brace-expansion": "^2.0.2",
+    "cross-spawn": "^7.0.5",
     "express": "^4.21.2",
     "mocha": "^11.0.1",
     "socket.io": "^4.8.0"
