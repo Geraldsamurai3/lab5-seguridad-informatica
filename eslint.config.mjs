@@ -1,23 +1,34 @@
+// eslint.config.mjs (ESM format for ESLint 9.x)
 import js from "@eslint/js";
 import globals from "globals";
-import { defineConfig } from "eslint/config";
 
 export default [
+  js.configs.recommended,
   {
     files: ["**/*.js"],
     languageOptions: {
+      ecmaVersion: 2022,
+      sourceType: "commonjs",
       globals: {
-        // Esto le indica a ESLint que Mocha está disponible
-        describe: "readonly",
-        it: "readonly",
-        before: "readonly",
-        after: "readonly",
-        beforeEach: "readonly",
-        afterEach: "readonly"
-             
+        ...globals.node,
+        ...globals.mocha,
       },
     },
+    rules: {
+      "no-unused-vars": "warn",
+      "no-undef": "error",
+      "semi": ["error", "always"],
+      "quotes": ["warn", "single", { "avoidEscape": true }],
+      "no-console": "off",
+    },
+  },
+  {
+    ignores: [
+      "node_modules/**",
+      "dist/**",
+      "build/**",
+      "coverage/**",
+      "*.min.js",
+    ],
   },
 ];
-
-//cambios
