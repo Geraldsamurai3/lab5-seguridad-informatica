@@ -1,76 +1,291 @@
 <!doctype html>
 <html>
   <head>
-    <title>Chat Socket.IO UNA - Secure</title>
+    <title>🎸 Hard Rock Chat - UNA Secure</title>
     <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font: 13px Helvetica, Arial; padding-top: 50px; }
+      @import url('https://fonts.googleapis.com/css2?family=Rock+Salt&family=Roboto+Condensed:wght@400;700&display=swap');
       
-      /* Barra de usuario */
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      
+      body { 
+        font-family: 'Roboto Condensed', sans-serif;
+        background: linear-gradient(135deg, #0a0a0a 0%, #1a0505 50%, #0a0a0a 100%);
+        color: #fff;
+        padding-top: 70px;
+        overflow-x: hidden;
+      }
+      
+      /* Barra de usuario estilo Hard Rock */
       #userBar { 
         position: fixed; 
         top: 0; 
         left: 0; 
         right: 0; 
-        background: #333; 
+        background: linear-gradient(90deg, #000000 0%, #1a0000 50%, #000000 100%);
+        border-bottom: 3px solid #ff0040;
+        box-shadow: 0 0 20px rgba(255, 0, 64, 0.5);
         color: white; 
-        padding: 10px 20px; 
+        padding: 12px 25px; 
         display: flex; 
         justify-content: space-between; 
         align-items: center;
         z-index: 1000;
+        backdrop-filter: blur(10px);
       }
-      #userInfo { display: flex; align-items: center; gap: 10px; }
+      
+      #userBar::before {
+        content: '🎸';
+        position: absolute;
+        left: 10px;
+        font-size: 24px;
+        animation: float 3s ease-in-out infinite;
+      }
+      
+      @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-5px); }
+      }
+      
+      #userInfo { 
+        display: flex; 
+        align-items: center; 
+        gap: 15px;
+        margin-left: 40px;
+      }
+      
       #userAvatar { 
-        width: 30px; 
-        height: 30px; 
+        width: 40px; 
+        height: 40px; 
         border-radius: 50%; 
-        border: 2px solid #fff;
+        border: 3px solid #ff0040;
+        box-shadow: 0 0 15px rgba(255, 0, 64, 0.7);
+        transition: all 0.3s ease;
       }
-      #userName { font-weight: bold; }
+      
+      #userAvatar:hover {
+        transform: scale(1.1) rotate(5deg);
+        box-shadow: 0 0 25px rgba(255, 0, 64, 1);
+      }
+      
+      #userName { 
+        font-weight: 700;
+        font-size: 18px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        text-shadow: 0 0 10px #ff0040;
+        color: #ff0040;
+      }
+      
+      #userEmail { 
+        font-size: 11px; 
+        color: #888;
+        letter-spacing: 1px;
+      }
+      
       #logoutBtn { 
-        background: #e74c3c; 
+        background: linear-gradient(135deg, #ff0040 0%, #8b0000 100%);
         color: white; 
-        border: none; 
-        padding: 8px 15px; 
-        border-radius: 4px; 
+        border: 2px solid #ff0040;
+        padding: 10px 25px; 
+        border-radius: 25px; 
         cursor: pointer;
         text-decoration: none;
-        font-size: 12px;
+        font-size: 14px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 15px rgba(255, 0, 64, 0.5);
       }
-      #logoutBtn:hover { background: #c0392b; }
       
-      /* Chat */
-      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-      form input { border: 0; padding: 10px;}
-      form button { width: 10%; background: rgb(130, 224, 255);  border: none; padding: 10px; }
-      #messages { list-style-type: none; margin: 0; padding: 0; }
-      #messages li { padding: 5px 10px; }
-      #messages li:nth-child(odd) { background: #eee; }
-      #messages { margin-bottom: 40px }
-      #nombre, #m { display: inline-block;}
-      #m {width: 69%; margin-right: 4px;}
-      #nombre {width: 20%}
+      #logoutBtn:hover { 
+        background: linear-gradient(135deg, #8b0000 0%, #ff0040 100%);
+        transform: scale(1.05);
+        box-shadow: 0 0 25px rgba(255, 0, 64, 0.9);
+      }
+      
+      /* Chat Messages */
+      #messages { 
+        list-style-type: none; 
+        margin: 20px auto; 
+        padding: 20px;
+        max-width: 1000px;
+        margin-bottom: 80px;
+      }
+      
+      #messages li { 
+        padding: 15px 20px;
+        margin: 10px 0;
+        background: rgba(26, 5, 5, 0.6);
+        border-left: 4px solid #ff0040;
+        border-radius: 8px;
+        backdrop-filter: blur(5px);
+        animation: slideIn 0.3s ease-out;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        transition: all 0.2s ease;
+      }
+      
+      #messages li:hover {
+        transform: translateX(5px);
+        border-left-width: 6px;
+        box-shadow: 0 6px 20px rgba(255, 0, 64, 0.3);
+      }
+      
+      @keyframes slideIn {
+        from { 
+          opacity: 0; 
+          transform: translateX(-20px); 
+        }
+        to { 
+          opacity: 1; 
+          transform: translateX(0); 
+        }
+      }
+      
+      #messages li:nth-child(odd) { 
+        background: rgba(10, 10, 10, 0.8);
+      }
+      
+      /* Form estilo Rock */
+      form { 
+        background: linear-gradient(90deg, #000000 0%, #1a0000 50%, #000000 100%);
+        border-top: 3px solid #ff0040;
+        padding: 20px; 
+        position: fixed; 
+        bottom: 0; 
+        width: 100%;
+        box-shadow: 0 -5px 30px rgba(255, 0, 64, 0.3);
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      form input { 
+        border: 2px solid #ff0040;
+        padding: 15px;
+        background: rgba(10, 10, 10, 0.9);
+        color: #fff;
+        border-radius: 25px;
+        font-family: 'Roboto Condensed', sans-serif;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        box-shadow: inset 0 0 10px rgba(255, 0, 64, 0.2);
+      }
+      
+      form input:focus {
+        outline: none;
+        border-color: #ff0040;
+        box-shadow: 0 0 20px rgba(255, 0, 64, 0.6), inset 0 0 10px rgba(255, 0, 64, 0.3);
+      }
+      
+      form input::placeholder {
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      
+      form button { 
+        width: 120px;
+        background: linear-gradient(135deg, #ff0040 0%, #8b0000 100%);
+        color: white;
+        border: 2px solid #ff0040;
+        padding: 15px 25px;
+        border-radius: 25px;
+        cursor: pointer;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 20px rgba(255, 0, 64, 0.5);
+        font-family: 'Roboto Condensed', sans-serif;
+      }
+      
+      form button:hover {
+        background: linear-gradient(135deg, #8b0000 0%, #ff0040 100%);
+        transform: scale(1.05) rotate(-2deg);
+        box-shadow: 0 0 30px rgba(255, 0, 64, 0.9);
+      }
+      
+      form button:active {
+        transform: scale(0.98);
+      }
+      
+      #nombre { 
+        width: 200px;
+        font-weight: 700;
+      }
+      
+      #m {
+        flex: 1;
+        max-width: 600px;
+      }
+      
+      /* Efectos de fondo */
+      body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: 
+          radial-gradient(circle at 20% 50%, rgba(255, 0, 64, 0.1) 0%, transparent 50%),
+          radial-gradient(circle at 80% 80%, rgba(139, 0, 0, 0.1) 0%, transparent 50%);
+        pointer-events: none;
+        z-index: -1;
+      }
+      
+      /* Scrollbar personalizada */
+      ::-webkit-scrollbar {
+        width: 12px;
+      }
+      
+      ::-webkit-scrollbar-track {
+        background: #0a0a0a;
+      }
+      
+      ::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #ff0040 0%, #8b0000 100%);
+        border-radius: 6px;
+      }
+      
+      ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(180deg, #8b0000 0%, #ff0040 100%);
+      }
+      
+      /* Loading animation */
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+      }
+      
+      .loading {
+        animation: pulse 1.5s ease-in-out infinite;
+      }
     </style>
   </head>
   <body>
     <!-- Barra de información del usuario -->
     <div id="userBar">
       <div id="userInfo">
-        <img id="userAvatar" src="" alt="User">
+        <img id="userAvatar" src="" alt="User" class="loading">
         <div>
-          <div id="userName">Cargando...</div>
-          <div id="userEmail" style="font-size: 11px; color: #ccc;"></div>
+          <div id="userName">🎸 Cargando...</div>
+          <div id="userEmail"></div>
         </div>
       </div>
-      <a href="/logout" id="logoutBtn">Cerrar Sesión</a>
+      <a href="/logout" id="logoutBtn">🚪 Salir</a>
     </div>
 
     <ul id="messages"></ul>
+    
     <form action="">
-      <input id="nombre" autocomplete="off" placeholder="Username" readonly/>
-      <input id="m" autocomplete="off" placeholder="Escriba un mensaje" /><button>Send</button>
+      <input id="nombre" autocomplete="off" placeholder="🎤 Rockstar" readonly/>
+      <input id="m" autocomplete="off" placeholder="💬 Escribe tu mensaje... 🤘" />
+      <button>🎸 ENVIAR</button>
     </form>
+    
     <script src="https://cdn.socket.io/4.7.2/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
@@ -78,23 +293,19 @@
     var colorHexTxt = "";
     var currentUser = null;
 
-    // genera colores aleatorios en hexadeximal
+    // genera colores aleatorios en hexadecimal con tonos rock
     function getRandomColor() {
-        var letters = '0123456789ABCDEF';
-        var color = '#';
-        for (var i = 0; i < 6; i++) {
-          color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
+        var rockColors = ['#ff0040', '#8b0000', '#ff1744', '#d50000', '#ff6090', '#c51162'];
+        return rockColors[Math.floor(Math.random() * rockColors.length)];
     }
 
     // Cargar información del usuario autenticado
     $.get('/user', function(data) {
       if (data.isAuthenticated && data.user) {
         currentUser = data.user;
-        $('#userName').text(data.user.name || data.user.nickname);
+        $('#userName').text('🎸 ' + (data.user.name || data.user.nickname).toUpperCase());
         $('#userEmail').text(data.user.email);
-        $('#userAvatar').attr('src', data.user.picture);
+        $('#userAvatar').attr('src', data.user.picture).removeClass('loading');
         
         // Usar el nombre del usuario de Auth0 en el chat
         $('#nombre').val(data.user.name || data.user.nickname);
@@ -125,18 +336,18 @@
 
       socket.on('Evento-Mensaje-Server', function(msg){
         var msgJson = JSON.parse(msg);
-        var mensajeDisplay = "<b style='color:"+ msgJson.color +"'>" + msgJson.nombre + "</b>: " + msgJson.mensaje;
+        var mensajeDisplay = "<b style='color:"+ msgJson.color +"; text-shadow: 0 0 10px " + msgJson.color + ";'>" + msgJson.nombre + "</b>: " + msgJson.mensaje;
         $('#messages').append($('<li>').html(mensajeDisplay));
         window.scrollTo(0, document.body.scrollHeight);
       });
 
       // Notificar cuando se conecta
       socket.on('connect', function() {
-        console.log('Connected to chat server');
+        console.log('🎸 Connected to Hard Rock Chat');
       });
 
       socket.on('disconnect', function() {
-        console.log('Disconnected from chat server');
+        console.log('🔌 Disconnected from chat');
       });
     });
     </script>
