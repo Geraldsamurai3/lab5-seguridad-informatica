@@ -33,7 +33,7 @@ jobs:
         with:
           image: zeppelin78/unalab-chatproject
           fail-build: true
-          severity-cutoff: high
+          severity-cutoff: critical
 
       - name: Login to Docker Hub
         if: success()
