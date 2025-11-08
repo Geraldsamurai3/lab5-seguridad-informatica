@@ -30,7 +30,7 @@ jobs:
       - name: Generate Security Report
         if: always()
         run: |
-          echo "# 🔒 Security Audit Report" >> $GITHUB_STEP_SUMMARY
+          echo "# Security Audit Report" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## Dependencies Security Status" >> $GITHUB_STEP_SUMMARY
           npm audit --json > audit.json || true
