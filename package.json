@@ -4,7 +4,10 @@
   "description": "Proyecto de seguridad informática con chat en tiempo real",
   "main": "server.js",
   "dependencies": {
+    "dotenv": "^16.4.5",
     "express": "^4.21.2",
+    "express-openid-connect": "^2.19.2",
+    "express-session": "^1.18.1",
     "mocha": "^11.0.1",
     "socket.io": "^4.8.0"
   },

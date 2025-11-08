@@ -1,10 +1,46 @@
 <!doctype html>
 <html>
   <head>
-    <title>Chat Socket.IO UNA</title>
+    <title>Chat Socket.IO UNA - Secure</title>
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font: 13px Helvetica, Arial; }
+      body { font: 13px Helvetica, Arial; padding-top: 50px; }
+      
+      /* Barra de usuario */
+      #userBar { 
+        position: fixed; 
+        top: 0; 
+        left: 0; 
+        right: 0; 
+        background: #333; 
+        color: white; 
+        padding: 10px 20px; 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center;
+        z-index: 1000;
+      }
+      #userInfo { display: flex; align-items: center; gap: 10px; }
+      #userAvatar { 
+        width: 30px; 
+        height: 30px; 
+        border-radius: 50%; 
+        border: 2px solid #fff;
+      }
+      #userName { font-weight: bold; }
+      #logoutBtn { 
+        background: #e74c3c; 
+        color: white; 
+        border: none; 
+        padding: 8px 15px; 
+        border-radius: 4px; 
+        cursor: pointer;
+        text-decoration: none;
+        font-size: 12px;
+      }
+      #logoutBtn:hover { background: #c0392b; }
+      
+      /* Chat */
       form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
       form input { border: 0; padding: 10px;}
       form button { width: 10%; background: rgb(130, 224, 255);  border: none; padding: 10px; }
@@ -18,9 +54,21 @@
     </style>
   </head>
   <body>
+    <!-- Barra de información del usuario -->
+    <div id="userBar">
+      <div id="userInfo">
+        <img id="userAvatar" src="" alt="User">
+        <div>
+          <div id="userName">Cargando...</div>
+          <div id="userEmail" style="font-size: 11px; color: #ccc;"></div>
+        </div>
+      </div>
+      <a href="/logout" id="logoutBtn">Cerrar Sesión</a>
+    </div>
+
     <ul id="messages"></ul>
     <form action="">
-      <input id="nombre" autocomplete="off" placeholder="Username"/>
+      <input id="nombre" autocomplete="off" placeholder="Username" readonly/>
       <input id="m" autocomplete="off" placeholder="Escriba un mensaje" /><button>Send</button>
     </form>
     <script src="https://cdn.socket.io/4.7.2/socket.io.js"></script>
@@ -28,6 +76,7 @@
     <script>
 
     var colorHexTxt = "";
+    var currentUser = null;
 
     // genera colores aleatorios en hexadeximal
     function getRandomColor() {
@@ -36,39 +85,60 @@
         for (var i = 0; i < 6; i++) {
           color += letters[Math.floor(Math.random() * 16)];
         }
-
         return color;
-     }
+    }
 
-      $(function () {
-        var socket = io();
-
-        // emite evento al servidor
+    // Cargar información del usuario autenticado
+    $.get('/user', function(data) {
+      if (data.isAuthenticated && data.user) {
+        currentUser = data.user;
+        $('#userName').text(data.user.name || data.user.nickname);
+        $('#userEmail').text(data.user.email);
+        $('#userAvatar').attr('src', data.user.picture);
         
-        $('form').submit(function(){
-            var nombreTxt = $('#nombre').val() || "Anomimo";
-            var mensajeTxt = $('#m').val();
+        // Usar el nombre del usuario de Auth0 en el chat
+        $('#nombre').val(data.user.name || data.user.nickname);
+      }
+    });
 
-            if (colorHexTxt == "") {
-                colorHexTxt = getRandomColor();
-            }
+    $(function () {
+      var socket = io();
 
-            var jsonMsg = { nombre: nombreTxt, mensaje: mensajeTxt, color: colorHexTxt };
-            socket.emit('Evento-Mensaje-Server', JSON.stringify(jsonMsg));
-            $('#m').val('');
-            return false;
-        });
+      // emite evento al servidor
+      $('form').submit(function(){
+        var nombreTxt = $('#nombre').val() || "Anónimo";
+        var mensajeTxt = $('#m').val();
 
-        // ... (resto del código) ...
+        if (!mensajeTxt.trim()) {
+          return false;
+        }
 
-        socket.on('Evento-Mensaje-Server', function(msg){
-            var msgJson = JSON.parse(msg);
-            var mensajeDisplay = "<b style='color:"+ msgJson.color +"'>" + msgJson.nombre + "</b>: " + msgJson.mensaje;
-            $('#messages').append($('<li>').html(mensajeDisplay));
-            window.scrollTo(0, document.body.scrollHeight);
-        });
+        if (colorHexTxt == "") {
+          colorHexTxt = getRandomColor();
+        }
 
+        var jsonMsg = { nombre: nombreTxt, mensaje: mensajeTxt, color: colorHexTxt };
+        socket.emit('Evento-Mensaje-Server', JSON.stringify(jsonMsg));
+        $('#m').val('');
+        return false;
       });
+
+      socket.on('Evento-Mensaje-Server', function(msg){
+        var msgJson = JSON.parse(msg);
+        var mensajeDisplay = "<b style='color:"+ msgJson.color +"'>" + msgJson.nombre + "</b>: " + msgJson.mensaje;
+        $('#messages').append($('<li>').html(mensajeDisplay));
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+
+      // Notificar cuando se conecta
+      socket.on('connect', function() {
+        console.log('Connected to chat server');
+      });
+
+      socket.on('disconnect', function() {
+        console.log('Disconnected from chat server');
+      });
+    });
     </script>
   </body>
 </html>
