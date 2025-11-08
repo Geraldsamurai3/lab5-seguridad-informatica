@@ -1,11 +1,11 @@
-FROM node:22-alpine
+FROM node:22-alpine //Actualizar a imagem base para a versão mais recente do Node.js 22
 
 
 WORKDIR /app
 
 COPY package*.json ./
 
-RUN apk update && apk upgrade --no-cache
+RUN apk update && apk upgrade --no-cache 
 
 RUN npm ci --omit=dev
 
