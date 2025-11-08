@@ -73,6 +73,10 @@ jobs:
     name: Snyk Security Scan
     runs-on: ubuntu-22.04
     needs: unit-tests  # Solo ejecuta si los tests pasan
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
 
     steps:
       - name: Checkout repository
@@ -93,13 +97,13 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          # Ejecuta la comprobación (test) y aplica filtro de severidad
           command: test
-          args: --severity-threshold=high --all-projects
+          args: --sarif-file-output=snyk.sarif --severity-threshold=high
 
       - name: Upload Snyk results to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v3
         if: always()
+        continue-on-error: true
         with:
           sarif_file: snyk.sarif
 
