@@ -194,13 +194,13 @@ module.exports = {
       }
 
       if (this.is_valid_url_image(obj.mensaje)) {
-        console.log("Es una imagen!");
+        console.log('Es una imagen!');
         obj.mensaje = this.getImageTag(obj.mensaje);
       } else if (this.is_valid_video_url(obj.mensaje)) {
-        console.log("Es un video!");
+        console.log('Es un video!');
         obj.mensaje = this.getEmbeddedCode(obj.mensaje);
       } else {
-        console.log("Es un texto!");
+        console.log('Es un texto!');
         // Sanitizar el texto para prevenir XSS
         obj.mensaje = this.sanitizeText(obj.mensaje);
       }
